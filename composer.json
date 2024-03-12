@@ -1,8 +1,8 @@
 {
-  "name": "webman/midjourney-proxy",
+  "name": "webman/midjourney",
   "type": "library",
   "license": "MIT",
-  "description": "Webman plugin webman/midjourney-proxy",
+  "description": "Webman plugin webman/midjourney",
   "require": {
       "workerman/http-client": "^2.1",
       "jenssegers/agent": "^2.6"
