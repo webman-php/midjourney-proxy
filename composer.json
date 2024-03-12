@@ -1,0 +1,13 @@
+{
+  "name": "webman/midjourney",
+  "type": "library",
+  "license": "MIT",
+  "description": "Webman plugin webman/midjourney",
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Webman\\Midjourney\\": "src"
+    }
+  }
+}
