@@ -4,6 +4,8 @@
   "license": "MIT",
   "description": "Webman plugin webman/midjourney-proxy",
   "require": {
+      "workerman/http-client": "^2.1",
+      "jenssegers/agent": "^2.6"
   },
   "autoload": {
     "psr-4": {
