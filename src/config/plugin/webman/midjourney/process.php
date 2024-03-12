@@ -34,7 +34,7 @@ return [
                     ]
                 ],
                 'settings' => [
-                    'debug' => false,
+                    'debug' => true,
                     'secret' => '',
                     'notifyUrl' => '',
                     'tmpPath' => runtime_path() . '/tmp/midjourney'
