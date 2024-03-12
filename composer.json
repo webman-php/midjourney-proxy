@@ -1,8 +1,8 @@
 {
-  "name": "webman/midjourney",
+  "name": "webman/midjourney-proxy",
   "type": "library",
   "license": "MIT",
-  "description": "Webman plugin webman/midjourney",
+  "description": "Webman plugin webman/midjourney-proxy",
   "require": {
   },
   "autoload": {
