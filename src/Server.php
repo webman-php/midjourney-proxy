@@ -12,6 +12,8 @@ use Workerman\Protocols\Http\Response;
 class Server
 {
 
+    protected $apiPrefix = '';
+
     /**
      * @param $config
      */
@@ -19,6 +21,7 @@ class Server
     {
         Config::init($config);
         Task::init($config['store']);
+        $this->apiPrefix = trim($config['settings']['apiPrefix'] ?? '', ' /') ?? '';
     }
 
     public function onWorkerStart()
@@ -33,7 +36,12 @@ class Server
 
     public function onMessage(TcpConnection $connection, Request $request)
     {
-        $path = trim($request->path(), '/');
+        $path = $request->path();
+        if ($this->apiPrefix && strpos($path, "/$this->apiPrefix") !== 0) {
+            $connection->send($this->notfound());
+            return;
+        }
+        $path = trim(substr($path, strlen($this->apiPrefix) + 1), '/');
         if (!strpos($path, '/')) {
             $connection->send($this->notfound());
             return null;
