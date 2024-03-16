@@ -55,7 +55,10 @@ class Image extends Base
         if (!$task) {
             throw new BusinessException('任务不存在');
         }
-
+        $notifyUrl = $request->post('notifyUrl', null);
+        if ($notifyUrl !== null && !is_scalar($notifyUrl)) {
+            throw new BusinessException('notifyUrl is invalid');
+        }
         $customId = $request->post('customId', '');
         $jobNames = [
             'MJ::JOB::upsample' => Task::ACTION_UPSCALE,
@@ -108,6 +111,9 @@ class Image extends Base
         }
         if ($action === Task::ACTION_VARIATION_REGION) {
             $params['mask'] = $mask;
+        }
+        if ($notifyUrl) {
+            $newTask->notifyUrl($notifyUrl);
         }
         $newTask->params($params);
         $newTask->discordId($task->discordId());
