@@ -55,13 +55,12 @@ class Server
         $headerSecret = $request->header('mj-api-secret');
         $secret = Config::get('settings.secret');
         if ($secret && $headerSecret !== $secret) {
-            $data = [
+            $response =  new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'code' => 403,
                 'msg' => '403 Api Secret 错误',
                 'taskId' => null,
                 'data' => []
-            ];
-            $response =  new Response(200, ['Content-Type' => 'application/json'], json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             $connection->send($response);
             return null;
         }
@@ -69,19 +68,23 @@ class Server
             $response = (new $controller)->$action($request);
         } catch (Throwable $e) {
             Log::error($e);
-            $data = [
+            $response =  new Response(200, ['Content-Type' => 'application/json'], json_encode([
                 'code' => 500,
                 'msg' => $e->getMessage(),
                 'taskId' => null,
                 'data' => []
-            ];
-            $response =  new Response(200, ['Content-Type' => 'application/json'], json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
         $connection->send($response);
     }
 
     protected function notfound(): Response
     {
-        return new Response(404, [], '404 Not Found');
+        return new Response(200, ['Content-Type' => 'application/json'], json_encode([
+            'code' => 404,
+            'msg' => 'API 404 Not Found',
+            'taskId' => null,
+            'data' => []
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 }

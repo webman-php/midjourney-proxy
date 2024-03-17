@@ -24,6 +24,9 @@ class Image extends Base
         if (!is_string($prompt) || $prompt === '') {
             throw new BusinessException('prompt is invalid');
         }
+        if ($this->containBannedWords($prompt)) {
+            throw new BusinessException('内容包含违禁词，此操作无法完成');
+        }
         $notifyUrl = $request->post('notifyUrl', null);
         if ($notifyUrl !== null && !is_scalar($notifyUrl)) {
             throw new BusinessException('notifyUrl is invalid');
@@ -48,7 +51,13 @@ class Image extends Base
     }
 
 
-    public function action(Request $request)
+    /**
+     * 任务
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function action(Request $request): Response
     {
         $taskId = $request->post('taskId');
         $task = Task::get($taskId);
@@ -100,6 +109,9 @@ class Image extends Base
             throw new BusinessException('prompt is required');
         }
         $prompt = $needPrompt ? $prompt : $task->prompt();
+        if ($this->containBannedWords($prompt)) {
+            throw new BusinessException('内容包含违禁词，此操作无法完成');
+        }
         $newTask = new Task($action);
         $params = [
             'customId' => $customId,
@@ -122,6 +134,26 @@ class Image extends Base
         $newTask->save();
         Discord::submit($newTask);
         return $this->json($newTask->id());
+    }
+
+    /**
+     * 包含禁用词
+     * @param $prompt
+     * @return bool
+     */
+    protected function containBannedWords($prompt): bool
+    {
+        $bannedWordsFile = base_path('config/plugin/webman/midjourney/banned-words.txt');
+        if (!$prompt || !file_exists($bannedWordsFile)) {
+            return false;
+        }
+        $bannedWords  = file($bannedWordsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($bannedWords as $bannedWord) {
+            if (strpos($prompt, $bannedWord) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
