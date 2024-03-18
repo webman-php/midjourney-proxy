@@ -192,7 +192,7 @@ class Discord
                      if ($task->status() === Task::STATUS_FINISHED) {
                          continue;
                      }
-                     $this->failed($task, "Process timeout");
+                     $this->failed($task, "任务超时");
                 }
             }
         });

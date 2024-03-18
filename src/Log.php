@@ -32,7 +32,6 @@ class Log
             MonoLog::channel(static::ERROR_LOG_CHANNEL)->error($content);
         }
         static::info($content);
-        static::debug($content);
     }
 
     public static function info($content)

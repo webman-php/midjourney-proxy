@@ -30,6 +30,12 @@ class Server
             if (isset($account['enable']) && !$account['enable']) {
                 continue;
             }
+            foreach ($account as $key => $value) {
+                if (empty($value)) {
+                    Log::error("Discord account config error $key is empty");
+                    continue 2;
+                }
+            }
             new Discord($account);
         }
     }
