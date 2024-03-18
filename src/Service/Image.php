@@ -2,6 +2,7 @@
 
 namespace Webman\Midjourney\Service;
 
+use Throwable;
 use Webman\Midjourney\Config;
 use Webman\Midjourney\Discord;
 use Webman\Midjourney\Task;
@@ -32,14 +33,7 @@ class Image
                 'payload_json' => json_encode($params)
             ],
             'success' => function ($response) use ($task, $discord) {
-                $content = (string)$response->getBody();
-                $json = $content ? json_decode($content, true) : null;
-                if ($content === '' || ($json['retry_after'] ?? 0)) {
-                    $task->status(Task::STATUS_SUBMITTED)->save();
-                    Discord::notify($task);
-                    return;
-                }
-                Discord::failed($task, $json ? json_encode($json, JSON_UNESCAPED_UNICODE) : $content);
+                static::successCallback($response, $task);
             },
             'error' => function ($error) use ($task, $discord) {
                 Discord::failed($task, $error->getMessage());
@@ -57,19 +51,28 @@ class Image
             ],
             'data' => json_encode($params),
             'success' => function ($response) use ($task, $discord) {
-                $content = (string)$response->getBody();
-                $json = $content ? json_decode($content, true) : null;
-                if ($content === '' || ($json['retry_after'] ?? 0)) {
-                    $task->status(Task::STATUS_SUBMITTED)->save();
-                    Discord::notify($task);
-                    return;
-                }
-                Discord::failed($task, $json ? json_encode($json, JSON_UNESCAPED_UNICODE) : $content);
+                static::successCallback($response, $task);
             },
             'error' => function ($error) use ($task, $discord) {
                 Discord::failed($task, $error->getMessage());
             }
         ];
+    }
+
+    protected static function successCallback($response, Task $task)
+    {
+        try {
+            $content = (string)$response->getBody();
+            $json = $content ? json_decode($content, true) : null;
+            if ($content === '' || ($json['retry_after'] ?? 0)) {
+                $task->status(Task::STATUS_SUBMITTED)->save();
+                Discord::notify($task);
+                return;
+            }
+            Discord::failed($task, $json ? json_encode($json, JSON_UNESCAPED_UNICODE) : $content);
+        } catch (Throwable $e) {
+            Discord::failed($task, (string)$e);
+        }
     }
 
     public static function change(Task $task, Discord $discord)
@@ -142,13 +145,7 @@ class Image
             ],
             'data' => json_encode($params),
             'success' => function ($response) use ($task, $discord) {
-                $content = (string)$response->getBody();
-                $json = $content ? json_decode($content, true) : null;
-                if ($content === '' || ($json['retry_after'] ?? 0)) {
-                    Discord::finished($task);
-                    return;
-                }
-                Discord::failed($task, $json ? json_encode($json, JSON_UNESCAPED_UNICODE) : $content);
+                static::successCallback($response, $task);
             },
             'error' => function ($error) use ($task, $discord) {
                 Discord::failed($task, $error->getMessage());

@@ -255,7 +255,7 @@ class Discord
     {
         $discordId = $task->discordId() ?: null;
         if (!$instance = static::getIdleInstance($discordId)) {
-            Log::debug("DISCORD No idle instance found");
+            Log::debug("TASK:{$task->id()} DISCORD No idle instance found");
             return;
         }
         $instance->lastSubmitTime = microtime(true);
