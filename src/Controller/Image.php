@@ -149,7 +149,8 @@ class Image extends Base
         }
         $bannedWords  = file($bannedWordsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($bannedWords as $bannedWord) {
-            if (strpos($prompt, $bannedWord) !== false) {
+            $pattern = '/\b' . preg_quote($bannedWord, '/') . '\b/';
+            if (preg_match($pattern, $prompt)) {
                 return true;
             }
         }
