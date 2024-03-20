@@ -19,4 +19,6 @@
 - [x] 支持禁用词设置
 - [x] 支持图片cdn替换
 
+
+测试地址 https://bla.cn
 更多文档参见手册 [webman/midjourney](https://www.workerman.net/plugin/159)
