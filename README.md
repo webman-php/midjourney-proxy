@@ -20,8 +20,13 @@
 - [x] 支持图片cdn替换
 
 
-## 测试地址
+## 相关项目
 https://bla.cn
+
+## webman AI QQ2000人群
+![image](https://github.com/webman-php/midjourney-proxy/assets/6073368/7b7aa50c-9f4b-4825-95a5-d034ce8f54fa)
+
+**QQ群 789898358**
 
 ## 文档
 [webman/midjourney](https://www.workerman.net/plugin/159)
