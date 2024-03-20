@@ -20,30 +20,15 @@ class Image extends Base
      */
     public function imagine(Request $request): Response
     {
-        $prompt = $request->post('prompt', null);
-        if (!is_string($prompt) || $prompt === '') {
-            throw new BusinessException('prompt is invalid');
-        }
-        if ($this->containBannedWords($prompt)) {
-            throw new BusinessException('内容包含违禁词，此操作无法完成');
-        }
-        $notifyUrl = $request->post('notifyUrl', null);
-        if ($notifyUrl !== null && !is_scalar($notifyUrl)) {
-            throw new BusinessException('notifyUrl is invalid');
-        }
-        $images = $request->post('images', []);
-        if (!$this->invalidImages($images)) {
-            throw new BusinessException('images is invalid');
-        }
-        $data = $request->post('data', []);
-        if ($data !== null && !is_array($data)) {
-            throw new BusinessException('data is invalid');
-        }
+        [$prompt, $notifyUrl, $images, $data] = $this->input($request, 'prompt|required', 'notifyUrl', 'images', 'data');
         $task = new Task(Task::ACTION_IMAGINE);
         $task->images($images);
         $task->prompt($prompt);
         if ($notifyUrl) {
             $task->notifyUrl($notifyUrl);
+        }
+        if ($data) {
+            $task->data($data);
         }
         $task->save();
         Discord::submit($task);
@@ -59,16 +44,10 @@ class Image extends Base
      */
     public function action(Request $request): Response
     {
-        $taskId = $request->post('taskId');
-        $task = Task::get($taskId);
-        if (!$task) {
+        [$taskId, $customId, $prompt, $mask, $notifyUrl, $data] = $this->input($request, 'taskId|required', 'customId|required', 'prompt', 'mask', 'notifyUrl', 'data');
+        if (!$task = Task::get($taskId)) {
             throw new BusinessException('任务不存在');
         }
-        $notifyUrl = $request->post('notifyUrl', null);
-        if ($notifyUrl !== null && !is_scalar($notifyUrl)) {
-            throw new BusinessException('notifyUrl is invalid');
-        }
-        $customId = $request->post('customId', '');
         $jobNames = [
             'MJ::JOB::upsample' => Task::ACTION_UPSCALE,
             'MJ::JOB::variation' => Task::ACTION_VARIATION,
@@ -99,19 +78,14 @@ class Image extends Base
         if (!$action) {
             throw new BusinessException('action not found');
         }
-        $prompt = $request->post('prompt');
-        $mask = $request->post('mask');
-        if ($action === Task::ACTION_VARIATION_REGION && (!is_string($mask) || $mask === '')) {
+        if ($action === Task::ACTION_VARIATION_REGION && !$mask) {
             throw new BusinessException('mask is required');
         }
         $needPrompt = in_array($action, [Task::ACTION_PIC_READER, Task::ACITON_ZOOMOUT_CUSTOM, Task::ACTION_VARIATION_REGION]);
-        if ($needPrompt && (!is_string($prompt) || $prompt === '')) {
+        if ($needPrompt && !$prompt) {
             throw new BusinessException('prompt is required');
         }
         $prompt = $needPrompt ? $prompt : $task->prompt();
-        if ($this->containBannedWords($prompt)) {
-            throw new BusinessException('内容包含违禁词，此操作无法完成');
-        }
         $newTask = new Task($action);
         $params = [
             'customId' => $customId,
@@ -127,6 +101,9 @@ class Image extends Base
         if ($notifyUrl) {
             $newTask->notifyUrl($notifyUrl);
         }
+        if ($data) {
+            $newTask->data($data);
+        }
         $newTask->params($params);
         $newTask->discordId($task->discordId());
         $newTask->prompt($prompt);
@@ -137,24 +114,49 @@ class Image extends Base
     }
 
     /**
-     * 包含禁用词
-     * @param $prompt
-     * @return bool
+     * 画图
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
      */
-    protected function containBannedWords($prompt): bool
+    public function blend(Request $request): Response
     {
-        $bannedWordsFile = base_path('config/plugin/webman/midjourney/banned-words.txt');
-        if (!$prompt || !file_exists($bannedWordsFile)) {
-            return false;
+        [$images, $notifyUrl, $data, $dimensions] = $this->input($request, 'images|required', 'notifyUrl', 'data', 'dimensions');
+        $task = new Task(Task::ACTION_BLEND);
+        if ($dimensions) {
+            $task->params(['dimensions' => $dimensions]);
         }
-        $bannedWords  = file($bannedWordsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        foreach ($bannedWords as $bannedWord) {
-            $pattern = '/\b' . preg_quote($bannedWord, '/') . '\b/';
-            if (preg_match($pattern, $prompt)) {
-                return true;
-            }
+        $task->images($images);
+        if ($notifyUrl) {
+            $task->notifyUrl($notifyUrl);
         }
-        return false;
+        if ($data) {
+            $task->data($data);
+        }
+        $task->save();
+        Discord::submit($task);
+        return $this->json($task->id());
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function describe(Request $request): Response
+    {
+        [$images, $notifyUrl, $data] = $this->input($request, 'images|required', 'notifyUrl', 'data');
+        $task = new Task(Task::ACTION_DESCRIBE);
+        $task->images($images);
+        if ($notifyUrl) {
+            $task->notifyUrl($notifyUrl);
+        }
+        if ($data) {
+            $task->data($data);
+        }
+        $task->save();
+        Discord::submit($task);
+        return $this->json($task->id());
     }
 
 }

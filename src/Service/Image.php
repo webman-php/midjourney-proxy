@@ -271,7 +271,6 @@ class Image
                             'components' => [[
                                 'type' => 4,
                                 'custom_id' => $task->params()['componentsCustomId'],
-                                //'value' => $task->params()['prompt'],
                                 'value' => $task->prompt(),
                             ]]
                         ]]
