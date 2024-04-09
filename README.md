@@ -22,7 +22,7 @@
 
 ## 相关项目
 [https://jey.cn](https://jey.cn)  
-[https://bla.cn](https://bla.cn/#module=painting)
+[https://bla.cn](https://bla.cn/#module=painting)  
 [webman AI](https://www.workerman.net/app/view/ai)
 
 ## webman AI QQ2000人群
