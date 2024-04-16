@@ -19,11 +19,13 @@
 - [x] 支持禁用词设置
 - [x] 支持图片cdn替换
 
-
 ## 相关项目
-[https://jey.cn](https://jey.cn)  
-[https://bla.cn](https://bla.cn/#module=painting)  
-[webman AI](https://www.workerman.net/app/view/ai)
+![image](https://github.com/webman-php/midjourney-proxy/assets/6073368/2d249e52-5e2a-4ca3-b356-99ea95c238e1)
+
+
+  [https://jey.cn](https://jey.cn)  
+  [https://bla.cn](https://bla.cn/#module=painting)  
+  [webman AI](https://www.workerman.net/app/view/ai)
 
 ## webman AI QQ2000人群
 ![image](https://github.com/webman-php/midjourney-proxy/assets/6073368/7b7aa50c-9f4b-4825-95a5-d034ce8f54fa)
