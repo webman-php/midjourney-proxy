@@ -617,7 +617,7 @@ class Discord
     public static function uniqId(): string
     {
         $string = str_replace('.', '', (string)microtime(true));
-        return substr($string, 0, 13) . random_int(100000, 999999);
+        return substr(substr($string, 0, 13) . random_int(100000000, 999999999), 0, 19);
     }
 
     public static function replaceImageCdn($url)
