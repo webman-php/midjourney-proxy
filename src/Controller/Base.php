@@ -64,7 +64,7 @@ class Base
             switch ($field) {
                 case 'prompt':
                     if ($this->containBannedWords($value)) {
-                        throw new BusinessException('内容包含违禁词，此操作无法完成');
+                        throw new BusinessException('出于政策隐私和安全的考虑，我们无法生成相关内容');
                     }
                     $input[] = $value;
                     break;
