@@ -19,4 +19,19 @@
 - [x] 支持禁用词设置
 - [x] 支持图片cdn替换
 
-更多文档参见手册 [webman/midjourney](https://www.workerman.net/plugin/159)
+## 相关项目
+![image](https://github.com/webman-php/midjourney-proxy/assets/6073368/2d249e52-5e2a-4ca3-b356-99ea95c238e1)
+
+
+
+  [https://bla.cn](https://bla.cn/#module=painting)  
+  [https://jey.cn](https://jey.cn)  
+  [webman AI](https://www.workerman.net/app/view/ai)  
+
+## webman AI QQ2000人群
+![image](https://github.com/webman-php/midjourney-proxy/assets/6073368/7b7aa50c-9f4b-4825-95a5-d034ce8f54fa)
+
+**QQ群 789898358**
+
+## 文档
+[webman/midjourney](https://www.workerman.net/plugin/159)
