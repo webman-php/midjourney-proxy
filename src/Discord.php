@@ -29,7 +29,7 @@ class Discord
     const BLEND_COMMAND_ID = '1062880104792997970';
     const BLEND_COMMAND_VERSION = '1237876415471554624';
     const DESCRIBE_COMMAND_ID = '1092492867185950852';
-    const DESCRIBE_COMMAND_VERSION = '1204231436023111690';
+    const DESCRIBE_COMMAND_VERSION = '1237876415471554625';
     const SERVER_URL = "https://discord.com";
     const CDN_URL = "https://cdn.discordapp.com";
     const GATEWAY_URL = "wss://gateway.discord.gg";
