@@ -66,7 +66,7 @@ class Base
                     if ($this->containBannedWords($value)) {
                         throw new BusinessException('出于政策隐私和安全的考虑，我们无法生成相关内容');
                     }
-                    $input[] = $value;
+                    $input[] = preg_replace('/\s+/', ' ', $value);
                     break;
                 case 'images':
                     $value = $value ?: [];
