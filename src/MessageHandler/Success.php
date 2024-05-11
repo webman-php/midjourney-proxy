@@ -19,8 +19,12 @@ class Success extends Base
         $messageId = $message['d']['id'] ?? '';
         if ($messageType === Discord::MESSAGE_CREATE && !$nonce && $finalPrompt && $messageHash) {
             if (!$task = Discord::getRunningTaskByCondition((new TaskCondition())->messageHash($messageHash))) {
-                Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId");
-                return false;
+                Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId nonce=$nonce and try to find InteractionFailure task");
+                $task = Discord::getRunningTaskByCondition((new TaskCondition())->prompt($finalPrompt)->params([Discord::INTERACTION_FAILURE => true]));
+                if (!$task) {
+                    Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId nonce=$nonce and no InteractionFailure task found");
+                    return false;
+                }
             }
             $imageUrl = $message['d']['attachments'][0]['url'] ?? '';
             $task->messageId($messageId);

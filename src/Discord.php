@@ -6,6 +6,7 @@ use Jenssegers\Agent\Agent;
 use Throwable;
 use Webman\Midjourney\MessageHandler\DescribeSuccess;
 use Webman\Midjourney\MessageHandler\Error;
+use Webman\Midjourney\MessageHandler\InteractionFailure;
 use Webman\Midjourney\MessageHandler\ModalCreateStart;
 use Webman\Midjourney\MessageHandler\Progress;
 use Webman\Midjourney\MessageHandler\Start;
@@ -36,6 +37,7 @@ class Discord
     const UPLOAD_URL = "https://discord-attachments-uploads-prd.storage.googleapis.com";
 
     const INTERACTION_CREATE = 'INTERACTION_CREATE';
+    const INTERACTION_FAILURE = 'INTERACTION_FAILURE';
     const MESSAGE_CREATE = 'MESSAGE_CREATE';
     const MESSAGE_UPDATE = 'MESSAGE_UPDATE';
     const MESSAGE_DELETE = 'MESSAGE_DELETE';
@@ -585,12 +587,12 @@ class Discord
         }
         $handlers = [
             Error::class,
+            InteractionFailure::class,
             Start::class,
             Progress::class,
             Success::class,
             UpscaleSuccess::class,
             DescribeSuccess::class,
-            //CustomZoomStart::class,
             ModalCreateStart::class,
             VaryRegionStart::class,
             VaryRegionProgress::class,
