@@ -40,7 +40,8 @@ class Image
         return [
             'method' => 'POST',
             'headers' => [
-                'Authorization' => $discord->token()
+                'Authorization' => $discord->token(),
+                'User-Agent' => $discord->useragent(),
             ],
             'data' => [
                 'payload_json' => json_encode($params)
@@ -60,7 +61,8 @@ class Image
             'method' => 'POST',
             'headers' => [
                 'Authorization' => $discord->token(),
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
+                'User-Agent' => $discord->useragent(),
             ],
             'data' => json_encode($params),
             'success' => function ($response) use ($task, $discord) {
@@ -131,7 +133,8 @@ class Image
             'method' => 'POST',
             'headers' => [
                 'Authorization' => $discord->token(),
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
+                'User-Agent' => $discord->useragent(),
             ],
             'data' => json_encode($params),
             'success' => function ($response) use ($task, $discord) {
@@ -154,7 +157,8 @@ class Image
             'method' => 'POST',
             'headers' => [
                 'Authorization' => $discord->token(),
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
+                'User-Agent' => $discord->useragent(),
             ],
             'data' => json_encode($params),
             'success' => function ($response) use ($task, $discord) {
