@@ -25,6 +25,8 @@ class TaskCondition
 
     protected $prompt;
 
+    protected $finalPrompt;
+
     protected $messageId;
 
     protected $messageHash;
@@ -58,6 +60,16 @@ class TaskCondition
     public function prompt($prompt): TaskCondition
     {
         $this->prompt = $prompt;
+        return $this;
+    }
+
+    /**
+     * @param $prompt
+     * @return $this
+     */
+    public function finalPrompt($prompt): TaskCondition
+    {
+        $this->finalPrompt = $prompt;
         return $this;
     }
 
@@ -110,14 +122,21 @@ class TaskCondition
         if ($this->prompt !== null && $this->prompt !== $task->prompt()) {
             return false;
         }
+        if ($this->finalPrompt !== null && $this->finalPrompt !== $task->finalPrompt()) {
+            return false;
+        }
         if ($this->messageId !== null && $this->messageId !== $task->messageId()) {
             return false;
         }
         if ($this->messageHash !== null && $this->messageHash !== $task->messageHash()) {
             return false;
         }
-        // 只查找prompt的任务时只查找messageHash为空的任务
+        // 只有prompt条件时只查找messageHash为空的任务
         if ($this->prompt !== null && $this->nonce === null && $this->messageId === null && $this->messageHash === null && $task->messageHash()) {
+            return false;
+        }
+        // 只有finalPrompt条件时只查找messageHash为空的任务
+        if ($this->finalPrompt !== null && $this->nonce === null && $this->messageId === null && $this->messageHash === null && $task->messageHash()) {
             return false;
         }
         $params = $task->params();

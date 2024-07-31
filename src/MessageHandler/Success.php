@@ -36,7 +36,7 @@ class Success extends Base
                 $task = Discord::getRunningTaskByCondition((new TaskCondition())->prompt($finalPrompt)->params([Discord::INTERACTION_FAILURE => true]));
                 if (!$task) {
                     Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId nonce=$nonce and no InteractionFailure task found");
-                    $task = Discord::getRunningTaskByCondition((new TaskCondition())->prompt($finalPrompt));
+                    $task = Discord::getRunningTaskByCondition((new TaskCondition())->prompt($finalPrompt)) ?: Discord::getRunningTaskByCondition((new TaskCondition())->finalPrompt($finalPrompt));
                     if (!$task) {
                         Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId nonce=$nonce prompt=$finalPrompt and no task found");
                         return false;
