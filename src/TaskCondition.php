@@ -109,7 +109,7 @@ class TaskCondition
      */
     public function match(Task $task): bool
     {
-        if ($this->nonce === null && $this->action === null && $this->prompt === null && $this->messageId === null && $this->messageHash === null && empty($this->params)) {
+        if ($this->nonce === null && $this->action === null && $this->prompt === null && $this->finalPrompt === null && $this->messageId === null && $this->messageHash === null && empty($this->params)) {
             Log::error(new RuntimeException('TaskCondition is empty'));
             return false;
         }
