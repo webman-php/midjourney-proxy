@@ -36,7 +36,11 @@ class Success extends Base
                 $task = Discord::getRunningTaskByCondition((new TaskCondition())->prompt($finalPrompt)->params([Discord::INTERACTION_FAILURE => true]));
                 if (!$task) {
                     Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId nonce=$nonce and no InteractionFailure task found");
-                    return false;
+                    $task = Discord::getRunningTaskByCondition((new TaskCondition())->prompt($finalPrompt));
+                    if (!$task) {
+                        Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId nonce=$nonce prompt=$finalPrompt and no task found");
+                        return false;
+                    }
                 }
             }
             $imageUrl = $message['d']['attachments'][0]['url'] ?? '';

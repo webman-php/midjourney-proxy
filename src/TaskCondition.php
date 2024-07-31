@@ -116,6 +116,10 @@ class TaskCondition
         if ($this->messageHash !== null && $this->messageHash !== $task->messageHash()) {
             return false;
         }
+        // 只查找prompt的任务时只查找messageHash为空的任务
+        if ($this->prompt !== null && $this->nonce === null && $this->messageId === null && $this->messageHash === null && $task->messageHash()) {
+            return false;
+        }
         $params = $task->params();
         foreach ($this->params as $key => $value) {
             if (!isset($params[$key]) || $params[$key] != $value) {

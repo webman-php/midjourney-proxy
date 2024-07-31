@@ -171,6 +171,14 @@ class Discord
                     Log::debug("DISCORD:{$this->id()} WSS Receive Message " . $data['t'] ?? '');
                 }
             }
+            // White list
+            $titleWhiteList = [
+                'Zoom Out',
+                'Inpaint'
+            ];
+            if (in_array($data['t'] ?? '', [Discord::INTERACTION_MODAL_CREATE, Discord::INTERACTION_IFRAME_MODAL_CREATE]) && !in_array($data['d']['title'] ?? '', $titleWhiteList)) {
+                file_put_contents(runtime_path('logs/midjourney/midjourney.warning.log'), date('Y-m-d H:i:s') . ' ' . ($data['d']['title'] ?? '') . "\n", FILE_APPEND);
+            }
             switch ($code) {
                 case Discord::MESSAGE_OPTION_HELLO:
                     $this->handleHello($data);
