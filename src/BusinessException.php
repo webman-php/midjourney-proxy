@@ -19,5 +19,5 @@ use Exception;
 
 class BusinessException extends Exception
 {
-
+    public $banWord = '';
 }

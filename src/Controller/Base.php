@@ -63,7 +63,7 @@ class Base
      * @return array
      * @throws BusinessException
      */
-    protected function input($request, ...$args)
+    protected function input($request, ...$args): array
     {
         $input = [];
         foreach ($args as $arg) {
@@ -76,8 +76,11 @@ class Base
             }
             switch ($field) {
                 case 'prompt':
-                    if ($this->containBannedWords($value)) {
-                        throw new BusinessException('出于政策隐私和安全的考虑，我们无法生成相关内容');
+                    $word = '';
+                    if ($this->containBannedWords($value, $word)) {
+                        $exception = new BusinessException('出于政策隐私和安全的考虑，我们无法生成相关内容');
+                        $exception->banWord = $word;
+                        throw $exception;
                     }
                     $input[] = $value ? preg_replace('/\s+/', ' ', $value) : $value;
                     break;
@@ -135,9 +138,10 @@ class Base
     /**
      * 包含禁用词
      * @param $prompt
+     * @param string $word
      * @return bool
      */
-    protected function containBannedWords($prompt): bool
+    protected function containBannedWords($prompt, string &$word = ''): bool
     {
         $bannedWordsFile = base_path('config/plugin/webman/midjourney/banned-words.txt');
         if (!$prompt || !file_exists($bannedWordsFile)) {
@@ -147,6 +151,7 @@ class Base
         foreach ($bannedWords as $bannedWord) {
             $pattern = '/\b' . preg_quote($bannedWord, '/') . '\b/';
             if (preg_match($pattern, $prompt)) {
+                $word = $bannedWord;
                 return true;
             }
         }

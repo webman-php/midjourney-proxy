@@ -91,7 +91,8 @@ class Server
                 'code' => 500,
                 'msg' => $e->getMessage(),
                 'taskId' => null,
-                'data' => []
+                'data' => [],
+                'ban-words' => $e->banWord ?? ''
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
         $connection->send($response);
