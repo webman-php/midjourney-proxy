@@ -487,6 +487,9 @@ class Discord
         foreach ($components as $section) {
             $buttons = [];
             foreach ($section['components'] ?? [] as $button) {
+                if (!isset($button['custom_id'])) {
+                    continue;
+                }
                 if (strpos($button['custom_id'], 'MJ::BOOKMARK::') !== false || $button['custom_id'] === 'MJ::Job::PicReader::all') {
                     break;
                 }
