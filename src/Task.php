@@ -216,7 +216,7 @@ class Task
      * @param string|null $action
      * @return $this|string
      */
-    public function action(string $action = null): string
+    public function action(?string $action = null): string
     {
         if ($action) {
             $this->action = $action;
@@ -335,7 +335,7 @@ class Task
         return $this->data;
     }
 
-    public function buttons(array $buttons = null)
+    public function buttons(?array $buttons = null)
     {
         if ($buttons !== null) {
             $this->buttons = $buttons;
@@ -434,7 +434,7 @@ class Task
         return $this->attachments;
     }
 
-    public function discordId(string $discordId = null)
+    public function discordId(?string $discordId = null)
     {
         if ($discordId) {
             $this->discordId = $discordId;
