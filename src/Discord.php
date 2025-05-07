@@ -150,8 +150,9 @@ class Discord
             'Origin' => 'https://discord.com',
         ];
         $ws->transport = $transport;
-        $ws->onConnect = function() {
+        $ws->onWebSocketConnect = function() {
             Log::debug("DISCORD:{$this->id()} WSS Connected");
+            $this->login();
         };
         $ws->onMessage = function (TcpConnection $connection, $data) {
             // 解析discord数据
@@ -182,7 +183,6 @@ class Discord
             switch ($code) {
                 case Discord::MESSAGE_OPTION_HELLO:
                     $this->handleHello($data);
-                    $this->login();
                     break;
                 case Discord::MESSAGE_OPTION_DISPATCH:
                     $this->handleDispatch($data);
