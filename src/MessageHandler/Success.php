@@ -30,7 +30,7 @@ class Success extends Base
         $messageHash = Discord::getMessageHash($message);
         $finalPrompt = static::parseContent($message['d']['content'] ?? '');
         $messageId = $message['d']['id'] ?? '';
-        if ($messageType === Discord::MESSAGE_CREATE && !$nonce && $finalPrompt && $messageHash) {
+        if ($messageType === Discord::MESSAGE_CREATE && $finalPrompt && $messageHash) {
             if (!$task = Discord::getRunningTaskByCondition((new TaskCondition())->messageHash($messageHash))) {
                 Log::debug("MessageHandler Success no task found messageHash=$messageHash messageId=$messageId nonce=$nonce and try to find InteractionFailure task");
                 $task = Discord::getRunningTaskByCondition((new TaskCondition())->prompt($finalPrompt)->params([Discord::INTERACTION_FAILURE => true]));
