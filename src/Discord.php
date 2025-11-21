@@ -141,7 +141,7 @@ class Discord
         }
         $ws = new AsyncTcpConnection("$gateway?encoding=json&v=9&compress=zlib-stream");
         $ws->headers = [
-            'Accept-Encoding' => 'gzip, deflate, br',
+            'Accept-Encoding' => 'gzip, deflate, br, zstd',
             'Accept-Language' => 'zh-CN,zh;q=0.9,en;q=0.8',
             'Cache-Control' => 'no-cache',
             'Pragma' => 'no-cache',
@@ -549,7 +549,7 @@ class Discord
 
     protected function send($data)
     {
-        $data = json_encode($data, true);
+        $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $this->gatewayConnection->send($data);
     }
 
@@ -558,39 +558,49 @@ class Discord
         $agent = new Agent();
         $agent->setUserAgent($this->useragent);
         $platform = $agent->platform() === 'OS X' ? 'Mac OS X' : $agent->platform();
+        
         $data = [
             'op' => Discord::MESSAGE_OPTION_IDENTIFY,
-            'd' => [
-                'token' => $this->token,
-                'capabilities' => 16381,
-                'properties' => [
-                    'os' => $platform,
-                    'browser' => $agent->browser(),
-                    'device' => '',
-                    'system_locale' => 'zh-CN',
-                    'browser_user_agent' => $this->useragent,
-                    'browser_version' => $agent->version($agent->browser()),
-                    'os_version' => $agent->version($platform),
-                    'referrer' => 'https://www.midjourney.com',
-                    'referring_domain' => 'www.midjourney.com',
-                    'referrer_current' => '',
-                    'referring_domain_current' => '',
-                    'release_channel' => 'stable',
-                    'client_build_number' => 268600,
-                    'client_event_source' => null,
+            'd' =>
+                [
+                    'token' => $this->token,
+                    'capabilities' => 1734653,
+                    'properties' =>
+                        [
+                            'os' => $platform,
+                            'browser' => $agent->browser(),
+                            'device' => '',
+                            'system_locale' => 'zh-CN',
+                            'browser_user_agent' => $this->useragent,
+                            'browser_version' => $agent->version($agent->browser()),
+                            'os_version' => $agent->version($platform),
+                            'referrer' => '',
+                            'referring_domain' => '',
+                            'referrer_current' => '',
+                            'referring_domain_current' => '',
+                            'release_channel' => 'stable',
+                            'client_build_number' => 471091,
+                            'client_event_source' => NULL,
+                            'has_client_mods' => false,
+                            'client_launch_id' => 'fb49c6ec-a502-442e-bba3-4c6d1a56930c',
+                            'launch_signature' => 'f10465eb-1101-4087-931a-ed3ed084e578',
+                            'client_app_state' => 'focused',
+                            'is_fast_connect' => false,
+                            'gateway_connect_reasons' => 'AppSkeleton',
+                        ],
+                    'presence' =>
+                        [
+                            'status' => 'unknown',
+                            'since' => 0,
+                            'activities' => [],
+                            'afk' => false,
+                        ],
+                    'compress' => false,
+                    'client_state' =>
+                        [
+                            'guild_versions' => (object)[]
+                        ],
                 ],
-                'presence' => [
-                    'status' => 'online',
-                    'since' => 0,
-                    'activities' => [],
-                    'afk' => false,
-                ],
-                'compress' => false,
-                'client_state' => [
-                    'guild_versions' => [],
-                    'api_code_version' => 0,
-                ],
-            ],
         ];
         Log::info("DISCORD:{$this->id()} WSS Send Identify");
         Log::debug("DISCORD:{$this->id()} WSS Send Identify\n" . json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
